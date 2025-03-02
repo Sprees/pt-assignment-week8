@@ -1,0 +1,64 @@
+body, * > * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+h1 {
+    padding: 50px;
+    text-align: center;
+}
+
+main {
+    display: flex;
+}
+
+.calendar {
+    margin: 0 50px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.day-names-container, .dates-container {
+    width: 100%;
+    display: flex;
+}
+
+.month-container {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.dates-container {
+    flex-wrap: wrap;
+}
+
+.day-names-container {
+    text-align: center;
+}
+
+.day-name {
+    flex-basis: 14.28%;
+    padding: 1rem 0;
+}
+
+.day {
+    flex-basis: calc(14.28% - 10px);
+}
+
+.day-name {
+    background-color: aliceblue;
+    border-bottom: 5px solid white;
+}
+
+.day {
+    background-color: antiquewhite;
+    aspect-ratio : 1 / 0.5;
+    margin: 5px;
+}
+
+.padding {
+    background-color: lightslategray;
+}
