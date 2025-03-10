@@ -1,164 +1,164 @@
-const tabBtns = document.querySelectorAll('.tabs .tab');
-const tabContents = document.querySelectorAll('.tab-contents > section');
+class App {
+    constructor() {
+        this.tabManager = new TabManager();
+        this.scheduleManager = new ScheduleManager();
+        this.calendar = new Calendar();
+    }
 
-if(tabBtns && tabContents) {
-    tabBtns.forEach((tabBtn => {
-        tabBtn.addEventListener('click', () => {
-            const tabFor = tabBtn.getAttribute('data-for');
+    init() {
+        this.calendar.render();
+        document.getElementById('previous').addEventListener('click', () => this.calendar.previousMonth());
+        document.getElementById('next').addEventListener('click', () => this.calendar.nextMonth());
+    }
 
-            tabBtns.forEach(btn => btn.classList.remove('active'))
-            
-            tabBtn.classList.add('active')
+    handleDayClick() {
 
-            tabContents.forEach(content => {
-                content.classList.remove('active');
-                if(content.id === tabFor) {
-                    content.classList.add('active');
-                }
-            })
-        })
-    }))
+    }
+}
+
+class TabManager {
+    constructor() {
+
+    }
+}
+
+class ScheduleManager {
+    constructor() {
+
+    }
 }
 
 class Calendar {
-    constructor(year, month) {
-        this.calenderDatesElement = document.querySelector('.dates-container');
-        this.monthElement = document.querySelector('#month');
-        this.currentDate = new Date();
-        this.dateString = this.currentDate.toLocaleDateString('en-us', {
-            weekday: 'long',
-            month: 'numeric',
-            day: 'numeric',
-            year: 'numeric',
-            
-        })
-        this.year = year;
-        this.month = month;
-        this.monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']; 
-        this.dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    constructor({date, body, header, onDayClick}) {
+        if(!this.isValidDate(date)) {
+            throw new Error('Invalid Date object')
+        }
+
+        this.header = document.querySelector(header);
+        this.body = document.querySelector(body);
+
+        this.today = date;
+        this.month = date.getMonth();
+        this.year = date.getFullYear();
+
+        this.onDayClick = onDayClick || (() => {});
     }
-    
-    getFirstDayOfMonth() {
-        return new Date(this.year, this.month, 1).getDay();
+
+    isValidDate(date) {
+        return date && Object.prototype.toString.call(date) === "[object Date]" && !isNaN(date);
     }
-    
-    getDaysInMonth(year, month) {
-        return new Date(year, month + 1, 0).getDate();
+
+    isCurrentDate(day, month, year) {
+        return day === this.today.getDate() && month === this.today.getMonth() && year === this.today.getFullYear();
     }
-    
-    getMonth(year, month) {
-        return new Date(year, month, 1).getMonth();
+
+    getDaysInMonth(num = 0, month = this.month, year = this.year) {
+        // 0 = last day of the previous month
+        return new Date(year, month + num, 0).getDate()
     }
-    
-    checkMonth(month) {
-        if(month === -1) {
-            return 11;
-        } else if (month === 12) {
-            return 0;
+
+    getMonth(num = 0, month = this.month, year = this.year, today = false) {
+        if(today) {
+            this.year = this.today.getFullYear();
+            this.month = this.today.getMonth();
         } else {
-            return month;
+            let date = new Date(year, month + num, 1);
+            this.year = date.getFullYear();
+            this.month = date.getMonth();
         }
-    }
-    
-    previousMonth() {
-        if(this.month === 0) {
-            this.year -= 1;
-        }
-        this.month = this.checkMonth(this.month - 1);
-        this.calenderDatesElement.innerHTML = '';
-        this.render();
-    }
-    
-    nextMonth() {
-        if(this.month === 11) {
-            this.year += 1;
-        }
-        this.month = this.checkMonth(this.month + 1);
-        this.calenderDatesElement.innerHTML = '';
         this.render();
     }
 
-    addEventListeners() {
-        document.querySelectorAll('.day').forEach(day => {
-            day.addEventListener('click', e => {
-                tabBtns.forEach(tabBtn => {
-                    if(tabBtn.getAttribute('data-for') === 'scheduling-pane') {
-                        tabBtn.classList.add('active');
-                    } else {
-                        tabBtn.classList.remove('active');
-                    }
-                })
-                tabContents.forEach(pane => {
-                    if(pane.id === 'scheduling-pane') {
-                        pane.classList.add('active');
-                    } else {
-                        pane.classList.remove('active');
-                    }
-                })
-                let schedulingPaneTitle = document.querySelector('#scheduling-pane > h1')
-                let month = this.month, year = this.year;
-                if(e.target.classList.contains('padding-before')) {
-                    if(month === 0) year -= 1;
-                    month = this.checkMonth(month - 1);
+    createCalendarBody() {
+        let containerElCount = 0,
+            firstDayOfMonth = new Date(this.year, this.month, 1).getDay(),
+            curMoTotalDays = this.getDaysInMonth(1), 
+            prevMoTotalDays = this.getDaysInMonth(),
+            prevMoDaysCount = (prevMoTotalDays - firstDayOfMonth) + 1,
+            curMoDaysCount = 1,
+            nextMoDaysCount = 1;
+
+        while(containerElCount < 42) {
+            let dayDiv = document.createElement('div');
+            let dayNum = document.createElement('p');
+
+            dayDiv.classList.add('day');
+            dayNum.classList.add('day-number')
+            
+            if(containerElCount < firstDayOfMonth) {
+                dayDiv.classList.add('day-prev')
+                dayNum.classList.add('day-number-prev')
+                dayNum.innerHTML = '' + prevMoDaysCount;
+                prevMoDaysCount++
+            } else if (curMoDaysCount <= curMoTotalDays) {
+                if(this.isCurrentDate(curMoDaysCount, this.month, this.year)) {
+                    dayDiv.classList.add('day-today')
+                    dayNum.classList.add('day-number-today');
                 }
-                if(e.target.classList.contains('padding-after')) {
-                    if(month === 11) year += 1;
-                    month = this.checkMonth(month + 1);
-                }
-                schedulingPaneTitle.innerHTML = new Date(year, month, +e.target.innerHTML).toLocaleDateString('en-us', {
-                    weekday: 'long',
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric'
-                })
-            })
-        })
-    }
-    
-    render() {
-        const currentMonthDays = this.getDaysInMonth(this.year, this.month);
-        const prevMonthDays = this.getDaysInMonth(this.year, this.month - 1);
-        const firstDayOfMonth = this.getFirstDayOfMonth();
-        
-        this.monthElement.innerHTML = `${this.monthNames[this.month]}, ${this.year}`;
-        
-        for(
-            let i = 0, 
-            day = 1, 
-            prevDay = prevMonthDays - firstDayOfMonth + 1, 
-            nextDay = 1;
-            i < 42;
-            i++
-        ) {
-            const dayDiv = document.createElement('div');
-            if(i < firstDayOfMonth) {
-                dayDiv.classList.add('day', 'padding-before');
-                dayDiv.innerHTML = prevDay;
-                prevDay++;
-            } else if(i >= firstDayOfMonth && day <= currentMonthDays) {
-                if(day === this.currentDate.getDate() && this.currentDate.getMonth() === this.month && this.currentDate.getFullYear() === this.year) {
-                    dayDiv.classList.add('current-date');
-                }
-                dayDiv.classList.add('day');
-                dayDiv.innerHTML = day;
-                day++;
+                dayNum.classList.add('day-number-cur')
+                dayNum.innerHTML = '' + curMoDaysCount;
+                curMoDaysCount++
             } else {
-                dayDiv.classList.add('day', 'padding-after');
-                dayDiv.innerHTML = nextDay;
-                nextDay++;
+                dayDiv.classList.add('day-next')
+                dayNum.classList.add('day-number-next')
+                dayNum.innerHTML = '' + nextMoDaysCount;
+                nextMoDaysCount++
             }
-            this.calenderDatesElement.appendChild(dayDiv);
+            
+            dayDiv.appendChild(dayNum);
+            this.body.appendChild(dayDiv);
+
+            containerElCount++
         }
-        this.addEventListeners();
+    }
+
+    createCalendarHeader() {
+        let todayString = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate()).toLocaleDateString('en-us', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        })
+
+        let monthYearString = new Date(this.year, this.month, 1).toLocaleDateString('en-us', {
+            month: 'long',
+            year: 'numeric'
+        })
+
+        monthYearString = monthYearString.split(' ').join(', ');
+
+        const prevBtn = document.createElement('button'),
+              nextBtn = document.createElement('button'),
+              todayStringH1 = document.createElement('h1'),
+              monthYearStringH1 = document.createElement('h1');
+
+        prevBtn.classList.add('header-btn');
+        nextBtn.classList.add('header-btn');
+
+        prevBtn.textContent = 'Previous'
+        nextBtn.textContent = 'Next'
+
+        todayStringH1.textContent = todayString;
+        monthYearStringH1.textContent = monthYearString;
+
+        this.header.appendChild(todayStringH1);
+        let div = document.createElement('div');
+        this.header.appendChild(div).append(prevBtn, monthYearStringH1, nextBtn);
+
+        prevBtn.addEventListener('click', () => this.getMonth(-1));
+        nextBtn.addEventListener('click', () => this.getMonth(1));
+        todayStringH1.addEventListener('click', (e) => this.getMonth(0, this.month, this.year, true));
+    }
+
+    render() {
+        this.body.innerHTML = '';
+        this.header.innerHTML = '';
+
+        this.createCalendarHeader();
+        this.createCalendarBody();
     }
 }
 
-class Schedule extends Calendar {
-    
-}
-
-const calendar = new Calendar(new Date().getFullYear(), new Date().getMonth());
+const calendar = new Calendar({ body: '#calendar-body', header: '#calendar-header', date: new Date() });
 calendar.render();
-
-document.getElementById('previous').addEventListener('click', () => calendar.previousMonth());
-document.getElementById('next').addEventListener('click', () => calendar.nextMonth());
+console.log(calendar)

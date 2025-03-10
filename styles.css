@@ -1,115 +1,80 @@
-body, * > * {
+* > * {
     box-sizing: border-box;
-    padding: 0;
     margin: 0;
+    padding: 0;
 }
 
-h1 {
-    padding: 50px;
-    text-align: center;
-}
-
-main {
+#calendar {
     margin: 0 auto;
-    width: 75vw;
+    width: 50%;
+    height: 100vh;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-.calendar {
+#calendar-body {
     display: flex;
-    flex-direction: column;
-}
-
-.day-names-container, .dates-container {
-    width: 100%;
-    display: flex;
-}
-
-.month-container {
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-}
-
-.dates-container {
     flex-wrap: wrap;
-}
-
-.day-names-container {
-    text-align: center;
-}
-
-.day-name {
-    flex-basis: 14.28%;
-    padding: 1rem 0;
-}
-
-.day {
-    flex-basis: calc(14.28% - 10px);
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-}
-
-.day-name {
-    background-color: aliceblue;
-    border-bottom: 5px solid white;
-}
-
-.day {
-    background-color: antiquewhite;
-    aspect-ratio : 1 / 0.6;
-    margin: 5px;
-}
-
-.day:hover {
-    margin: 1px;
-    flex-basis: calc(14.28% - 2px);
-    cursor: pointer;
-}
-
-.current-date {
-    border: 2px solid red;
-    padding: calc(0.5rem - 2px);
-}
-
-.padding-before, .padding-after {
-    background-color: lightslategray;
-    opacity: 0.75;
-    color: white;
-}
-
-.day-btn {
-    display: none;
-    background-color: white;
-}
-
-.day:hover > .day-btn, .day-btn:hover {
-    display: inline-block;
-}
-
-.tabs .active {
     border: 1px solid red;
 }
 
-.tab-contents > section { 
-    display: none;
+#calendar-header {
+    text-align: center;
+    width: 100%;
+    padding: 1rem;
 }
 
-.tab-contents .active {
-    display: block !important;
+#calendar-header > h1 {
+    padding-bottom: 3rem;
 }
 
-.column-container {
-    padding: 0 10px;
+#calendar-header > h1:hover {
+    cursor: pointer;
+}
+
+#calendar-header > div {
     width: 100%;
     display: flex;
-    gap: 10px;
-    background-color: lightblue;
+    justify-content: space-between;   
 }
 
-.column-container > div {
-    text-align: center;
-    flex-basis: 33%;
-    background-color: red;
+.header-btn {
+    width: 5rem;
+    height: 2rem;
+    border-radius: 1rem;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+/* Day Container */
+
+.day {
+    aspect-ratio: 1 / 1;
+    width: 14.285714%;
+}
+
+.day:hover {
+    border: 1px solid blue;
+}
+
+.day-prev, .day-next {
+    background-color: lightgrey;
+    opacity: 75%;
+}
+
+.day-today {
+    border: 1px solid green;
+}
+
+/* Day Number Span */
+
+.day-number {
+    margin-top: 1rem;
+    margin-left: 1rem;
+}
+
+.day-number-today {
+    color: green;
 }
