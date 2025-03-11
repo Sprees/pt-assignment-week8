@@ -1,8 +1,17 @@
 class App {
     constructor() {
-        this.tabManager = new TabManager({ tabSelector: '[data-app-tab-for]', paneSelector: '[data-app-tab-pane]', defaultId: 'calendar' });
-        // this.scheduleManager = new ScheduleManager();
-        this.calendar = new Calendar({ body: '#calendar-body', header: '#calendar-header', date: new Date() });
+        this.tabManager = new TabManager({ 
+            tabSelector: '[data-app-tab-for]', 
+            paneSelector: '[data-app-tab-pane]', 
+            defaultId: 'calendar',
+        });
+        this.scheduleManager = new ScheduleManager();
+        this.calendar = new Calendar({ 
+            body: '#calendar-body', 
+            header: '#calendar-header', 
+            date: new Date(),             
+            onDayClick: this.handleDayClick.bind(this) 
+        });
 
         this.init()
     }
@@ -11,8 +20,11 @@ class App {
         this.calendar.render();
     }
 
-    handleDayClick() {
-
+    handleDayClick(selectedDate) {
+        this.scheduleManager.setSelectedDate(selectedDate);
+        console.log('Day Clicked')
+        console.log(selectedDate)
+        this.tabManager.switchToTab('scheduler');
     }
 }
 
@@ -54,7 +66,25 @@ class TabManager {
 
 class ScheduleManager {
     constructor() {
+        this.selectedDate = null;
+    }
 
+    setSelectedDate(date) {
+        this.selectedDate = date;
+        this.updateSchedulerUI();
+    }
+
+    updateSchedulerUI() {
+        const schedulerDisplay = document.querySelector('#scheduler-date-display');
+
+        if (schedulerDisplay && this.selectedDate) {
+            schedulerDisplay.textContent = `${this.selectedDate.toLocaleDateString('en-us', {
+                weekday: 'long',
+                month: 'long',
+                year: 'numeric',
+                day: 'numeric'
+            })}`;
+        }
     }
 }
 
@@ -71,7 +101,7 @@ class Calendar {
         this.month = date.getMonth();
         this.year = date.getFullYear();
 
-        this.onDayClick = onDayClick || (() => {});
+        this.onDayClick = onDayClick
 
         this.createCalendarHeader();
     }
@@ -121,6 +151,7 @@ class Calendar {
         // Used while loop for readability with so many variables being affected in loop
         // containerElCount will be used to track the 42 elements being created
         while(containerElCount < 42) {
+            let data;
             // create elements, the day div element and the day number that will be inside the day div
             let dayDiv = document.createElement('div');
             let dayNum = document.createElement('p');
@@ -137,6 +168,7 @@ class Calendar {
                 // set the day number paragraph element to day count
                 dayNum.innerHTML = '' + prevMoDaysCount;
                 // add 1 to previous month days count
+                data = new Date(this.year, this.month - 1, prevMoDaysCount);
                 prevMoDaysCount++
             // otherwise, if current month day count is less than or equal to current month's total days, insert current month day number into day element
             } else if (curMoDaysCount <= curMoTotalDays) {
@@ -147,6 +179,7 @@ class Calendar {
                 dayNum.classList.add('day-number-cur')
                 dayNum.innerHTML = '' + curMoDaysCount;
                 // add 1 to current month day count
+                data = new Date(this.year, this.month, curMoDaysCount);
                 curMoDaysCount++
             // if previous if/else conditions are not met, previous month and current month days have been applied to the day elements. Now start applying
             // next month day count to day element
@@ -155,9 +188,13 @@ class Calendar {
                 dayNum.classList.add('day-number-next')
                 dayNum.innerHTML = '' + nextMoDaysCount;
                 // add 1 to next day count
+                data = new Date(this.year, this.month + 1, nextMoDaysCount);
                 nextMoDaysCount++
             }
             
+            dayDiv.addEventListener('click', () => {
+                this.onDayClick(data);
+            });
             // append the day number element to the day div
             dayDiv.appendChild(dayNum);
             // append day div to the calendar body
