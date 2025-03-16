@@ -1,11 +1,132 @@
 class App {
     constructor() {
+        this.employees = [
+            {
+                firstName: "Logan",
+                lastName: "Baird",
+                phone: "(544) 842-7066",
+                position: "Lead",
+                id: 1
+
+            },
+            {
+                firstName: "Blake",
+                lastName: "Witt",
+                phone: "(759) 462-3491",
+                position: "Laborer",
+                id: 2
+            },
+            {
+                firstName: "Christian",
+                lastName: "Clarke",
+                phone: "(572) 623-3038",
+                position: "Lead",
+                id: 3
+            },
+            {
+                firstName: "Reuben",
+                lastName: "Hardin",
+                phone: "(847) 723-6068",
+                position: "Lead",
+                id: 4
+            },
+            {
+                firstName: "Tiger",
+                lastName: "Burgess",
+                phone: "(317) 544-5435",
+                position: "Lead",
+                id: 5
+            },
+            {
+                firstName: "Conan",
+                lastName: "Dejesus",
+                phone: "(512) 716-4738",
+                position: "Lead",
+                id: 6
+            },
+            {
+                firstName: "Herman",
+                lastName: "Morrison",
+                phone: "(905) 437-2547",
+                position: "Laborer",
+                id: 7
+            },
+            {
+                firstName: "Stephen",
+                lastName: "Baker",
+                phone: "(627) 418-6178",
+                position: "Laborer",
+                id: 8
+            },
+            {
+                firstName: "Basil",
+                lastName: "Salazar",
+                phone: "(745) 683-2197",
+                position: "Laborer",
+                id: 9
+            },
+            {
+                firstName: "Levi",
+                lastName: "Shaffer",
+                phone: "(243) 773-8634",
+                position: "Laborer",
+                id: 10
+            },
+            {
+                firstName: "Slade",
+                lastName: "Conley",
+                phone: "(431) 440-6155",
+                position: "Laborer",
+                id: 11
+            },
+            {
+                firstName: "Clinton",
+                lastName: "Berg",
+                phone: "(310) 378-2405",
+                position: "Laborer",
+                id: 12
+            },
+            {
+                firstName: "Jarrod",
+                lastName: "Ruiz",
+                phone: "(347) 134-5139",
+                position: "Laborer",
+                id: 13
+            },
+            {
+                firstName: "Steven",
+                lastName: "Glover",
+                phone: "(823) 778-2511",
+                position: "Laborer",
+                id: 14
+            },
+            {
+                firstName: "Lev",
+                lastName: "Burks",
+                phone: "(863) 781-5917",
+                position: "Laborer",
+                id: 15
+            },
+            {
+                firstName: "Keegan",
+                lastName: "Marsh",
+                phone: "(616) 898-7429",
+                position: "Laborer",
+                id: 16
+            }
+        ];
+        this.jobs = [];
+
         this.tabManager = new TabManager({ 
             tabSelector: '[data-app-tab-for]', 
             paneSelector: '[data-app-tab-pane]', 
-            defaultId: 'calendar',
+            defaultId: 'calendar'
         });
-        this.scheduleManager = new ScheduleManager();
+        this.scheduleManager = new ScheduleManager({
+            body: '#scheduler-body',
+            header: '#scheduler-header',
+            employeeList: this.employees,
+        });
         this.calendar = new Calendar({ 
             body: '#calendar-body', 
             header: '#calendar-header', 
@@ -22,8 +143,6 @@ class App {
 
     handleDayClick(selectedDate) {
         this.scheduleManager.setSelectedDate(selectedDate);
-        console.log('Day Clicked')
-        console.log(selectedDate)
         this.tabManager.switchToTab('scheduler');
     }
 }
@@ -65,12 +184,110 @@ class TabManager {
 }
 
 class ScheduleManager {
-    constructor() {
+    constructor({ header, body, employeeList }) {
+        this.header = document.querySelector(header);
+        this.body = document.querySelector(body);
         this.selectedDate = null;
+        this.employees = employeeList;
+        this.jobEntry = {
+            date: null,
+            startTime: '',
+            addresses: [],
+            trucks: 0,
+            crew: [],
+            jobType: '',
+            specialty: [],
+            notes: ''
+        }
+        this.jobs = [];
+
+        this.setSelectedDate();
+        this.updateAvailableEmployees();
     }
 
-    setSelectedDate(date) {
+    createEmployeeCard(employee, add = true) {
+        let { firstName, lastName, phone, position, id } = employee;
+        let employeeCardEl = document.createElement('div'),
+            nameEl = document.createElement('div'),
+            positionEl = document.createElement('div'),
+            phoneEl = document.createElement('div'),
+            btnEl = document.createElement('button');
+
+        employeeCardEl.classList.add('employee-card');
+        nameEl.classList.add('employee-name');
+        positionEl.classList.add('employee-position');
+        phoneEl.classList.add('employee-phone');
+
+        nameEl.textContent = `${firstName} ${lastName}`;
+        positionEl.textContent = position;
+        phoneEl.textContent = phone;
+
+        if(add) {
+            btnEl.classList.add('employee-add-btn');
+            btnEl.textContent = 'Add'
+            btnEl.addEventListener('click', () => {
+                this.addEmployeeToJobEntry(employee);
+            })
+        } else {
+            btnEl.classList.add('employee-remove-btn');
+            btnEl.textContent = 'X'
+        }
+
+        employeeCardEl.append(nameEl, positionEl, phoneEl, btnEl);
+        // console.log(employeeCardEl);
+        return employeeCardEl;
+    }
+
+    updateAvailableEmployees() {
+        let employeListDiv = document.getElementById('scheduler-employee-list');
+        employeListDiv.innerHTML = '';
+
+        this.employees.forEach(employee => {
+            let employeeCard = this.createEmployeeCard(employee);
+            employeListDiv.appendChild(employeeCard);
+        })
+    }
+
+    removeAvailableEmployees(employeeId) {
+        let employees = this.employees.filter(employee => employee.id !== employeeId)
+        this.employees = employees;
+        this.updateAvailableEmployees();
+    }
+    
+    addAvailableEmployees() {
+
+    }
+
+    updateJobEntryData() {
+        let jobEntryFormInputs = Array.from(document.getElementById('job-entry-form').elements);
+        jobEntryFormInputs.forEach(input => {
+            let name = input.name.split('').map((s, i, name) => name[i - 1] === '-' ? s.toUpperCase() : s)
+            name = name.join('').replaceAll('-', '');
+            console.log(name);
+            if(name === this.jobEntry[name]) {
+                
+            }
+        })
+    }
+
+    addEmployeeToJobEntry(employee) {
+        let jobEntryCrewEl = document.querySelector('#crew');
+        let employeeCard = this.createEmployeeCard(employee, false);
+        jobEntryCrewEl.appendChild(employeeCard);
+        this.removeAvailableEmployees(employee.id);
+    }
+
+    removeEmployeeFromJobEntry(employee) {
+        
+    }
+
+    addJobEntryToJobs() {
+        
+    }
+
+    setSelectedDate(date = new Date()) {
         this.selectedDate = date;
+        this.jobEntry.date = date;
         this.updateSchedulerUI();
     }
 

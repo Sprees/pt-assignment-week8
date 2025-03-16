@@ -4,11 +4,10 @@
     padding: 0;
 }
 
-/* #calendar {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-} */
+#calendar {
+    width: 50%;
+    margin: 0 auto;
+}
 
 #calendar-body {
     width: 100%;
@@ -25,7 +24,6 @@
 
 #calendar-header > h1 {
     display: inline-block;
-    /* margin: 0 auto; */
     margin: 3rem 0;
 }
 
@@ -123,14 +121,110 @@
     flex-direction: column;
 }
 
-.panes {
-    margin: 0 auto;
-    width: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .active {
     border-bottom: none !important;
+}
+
+/* Scheduler Header */
+
+#scheduler-header {
+    width: 100%;
+    text-align: center;
+    padding: 1rem;
+}
+
+#scheduler-header > h1 {
+    margin: 3rem 0;
+}
+
+#scheduler-body {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+#scheduler-body > div {
+    flex-basis: 33.33%;
+    border: 1px solid red;
+}
+
+#scheduler-employee-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Employee Card */
+
+.employee-card {
+    flex-basis: calc(50% - 0.5rem);
+    position: relative; 
+    border: 1px solid #333;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    margin: 0.25rem;
+    font-family: Arial, sans-serif;
+    box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
+}
+
+.employee-name {
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.employee-position {
+    font-size: 1rem;
+    color: #666;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+}
+
+.employee-phone {
+    font-size: 0.75rem;
+}
+
+.employee-add-btn, .employee-remove-btn {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 1rem;
+    background-color: #4CAF50;
+    color: white;
+    padding: 0.35rem 0.7rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.employee-remove-btn {
+    background-color: red;
+}
+
+.employee-remove-btn:hover {
+    background-color: darkred;
+}
+
+.employee-add-btn:hover {
+    background-color: #45a049;
+}
+
+/* Job Entry Form */
+
+#job-entry-form {
+    position: relative;
+}
+
+#job-entry-form > button {
+    font-size: 1rem;
+    position: absolute;
+    top: 0px;
+    right: 20px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid green;
+    cursor: pointer;
+}
+
+#job-entry-form > button:hover {
+    background-color: whitesmoke;
 }
