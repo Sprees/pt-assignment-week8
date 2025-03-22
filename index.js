@@ -189,20 +189,34 @@ class ScheduleManager {
         this.body = document.querySelector(body);
         this.selectedDate = null;
         this.employees = employeeList;
-        this.jobEntry = {
-            date: null,
-            startTime: '',
-            addresses: [],
-            trucks: 0,
-            crew: [],
-            jobType: '',
-            specialty: [],
-            notes: ''
-        }
         this.jobs = [];
 
         this.setSelectedDate();
         this.updateAvailableEmployees();
+        document.querySelector('#job-entry-submit').addEventListener('click', event => {
+            event.preventDefault();
+
+            let customerInfoInputs = document.querySelectorAll(
+                'input[name=customer-name], input[name=customer-phone], input[name=customer-email]'
+            )
+            let addressInputs = document.querySelectorAll(
+                'input[name=address-1], input[name=address-2], input[name=city], select[name=state], input[name=zip-code]'
+            )
+
+            let jobInfoInputs = document.querySelectorAll(
+                'input[name=start-time], input[name=trucks], select[name=job-type], input[type=checkbox], textarea[name=notes]'
+            )
+
+            console.log(customerInfoInputs)
+            console.log(addressInputs)
+            console.log(jobInfoInputs)
+
+            this.addJobEntryToJobs({
+                customerInfoInputs,
+                addressInputs,
+                jobInfoInputs
+            }) 
+        })
     }
 
     createEmployeeCard(employee, add = true) {
@@ -231,6 +245,9 @@ class ScheduleManager {
         } else {
             btnEl.classList.add('employee-remove-btn');
             btnEl.textContent = 'X'
+            btnEl.addEventListener('click', event => {
+                this.removeEmployeeFromJobEntry(event, employee);
+            })
         }
 
         employeeCardEl.append(nameEl, positionEl, phoneEl, btnEl);
@@ -254,20 +271,13 @@ class ScheduleManager {
         this.updateAvailableEmployees();
     }
     
-    addAvailableEmployees() {
-
-    }
-
-    updateJobEntryData() {
-        let jobEntryFormInputs = Array.from(document.getElementById('job-entry-form').elements);
-        jobEntryFormInputs.forEach(input => {
-            let name = input.name.split('').map((s, i, name) => name[i - 1] === '-' ? s.toUpperCase() : s)
-            name = name.join('').replaceAll('-', '');
-            console.log(name);
-            if(name === this.jobEntry[name]) {
-                
-            }
-        })
+    addAvailableEmployees(employee) {
+        let employees = this.employees.filter(e => e.id === employee.id)
+        if(!employees.length) {
+            this.employees.push(employee);
+            console.log(this.employees)
+        }
+        this.updateAvailableEmployees();
     }
 
     addEmployeeToJobEntry(employee) {
@@ -277,17 +287,58 @@ class ScheduleManager {
         this.removeAvailableEmployees(employee.id);
     }
 
-    removeEmployeeFromJobEntry(employee) {
-        
+    removeEmployeeFromJobEntry(event, employee) {
+        event.preventDefault();
+        event.currentTarget.parentElement.outerHTML = '';
+        this.addAvailableEmployees(employee);
     }
 
-    addJobEntryToJobs() {
-        
+    addJobEntryToJobs(inputsObj) {
+        let { customerInfoInputs, jobInfoInputs, addressInputs } = inputsObj
+        let jobObj = {
+            date: this.selectedDate,
+            customerName: customerInfoInputs[0].value,
+            customerPhone: customerInfoInputs[1].value,
+            customerEmail: customerInfoInputs[2].value,
+            addresses: [],
+            startTime: jobInfoInputs[0].value,
+            trucks: +jobInfoInputs[1].value,
+            crew: [],
+            jobType: jobInfoInputs[2].value,
+            specialty: [],
+            notes: jobInfoInputs[6].value
+        }
+
+        jobInfoInputs = Array.from(jobInfoInputs)
+        jobInfoInputs.forEach(input => {
+            if(input.type === 'checkbox' && input.checked) {
+                jobObj.specialty.push(input.value);
+            }
+        })
+
+        addressInputs = Array.from(addressInputs);
+        while(addressInputs.length > 0) {
+            if(addressInputs.length % 5 === 0) {
+                let addressObj = {
+                    address1: addressInputs[0].value,
+                    address2: addressInputs[1].value,
+                    city: addressInputs[2].value,
+                    state: addressInputs[3].value,
+                    zipCode: addressInputs[4].value,
+                }
+                jobObj.addresses.push(addressObj)
+            }
+            addressInputs.splice(0, 5)
+        }
+
+        console.log(jobObj)
+        this.jobs.push(jobObj);
+        console.log(this.jobs)
     }
 
     setSelectedDate(date = new Date()) {
         this.selectedDate = date;
-        this.jobEntry.date = date;
+        // this.jobEntry.date = date;
         this.updateSchedulerUI();
     }
 

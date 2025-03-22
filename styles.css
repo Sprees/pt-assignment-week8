@@ -145,18 +145,26 @@
 
 #scheduler-body > div {
     flex-basis: 33.33%;
-    border: 1px solid red;
+}
+
+#scheduler-body > div:first-of-type {
+    padding: 0 2rem;
+}
+
+#scheduler-body > div:last-of-type {
+    padding: 0 2rem;
 }
 
 #scheduler-employee-list {
+    max-height: 1000px;
+    overflow-y:auto;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
 }
 
 /* Employee Card */
 
 .employee-card {
-    flex-basis: calc(50% - 0.5rem);
     position: relative; 
     border: 1px solid #333;
     border-radius: 0.5rem;
@@ -210,8 +218,55 @@
 
 /* Job Entry Form */
 
+#job-form-container {
+    border: 1px solid black;
+    border-radius: 0.5rem;
+}
+
+#job-form-container > h2 {
+    padding: 1rem;
+    text-align: center;
+}
+
 #job-entry-form {
     position: relative;
+    padding: 1rem;
+}
+
+input[type="time"] {
+    width: max-content;
+}
+
+fieldset > div {
+    display: flex;
+    gap: 2rem;
+}
+
+label[for=state], label[for=zip-code] {
+    display: block;
+}
+
+#zip-code, select {
+    padding: 0.25rem;
+    border-radius: 0.3rem;
+}
+
+select {
+    background-color: inherit;
+}
+
+fieldset > input {
+    width: 100%;
+    padding: 0.25rem;
+    padding-left: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.3rem;
+    display: block;
+}
+
+fieldset {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
 }
 
 #job-entry-form > button {
@@ -228,3 +283,43 @@
 #job-entry-form > button:hover {
     background-color: whitesmoke;
 }
+
+.job-form-group {
+    margin-bottom: 1rem;
+}
+
+#start-time {
+    border: none;
+}
+
+#start-time:focus {
+    outline: none;
+}
+
+/* Timeline */
+
+.timeline-markers {
+    height: 100%;
+    border: 1px solid black;
+    background-color: #f3f6f4;
+    overflow: hidden;
+    border-radius: 0.5rem;
+}
+
+.time-marker {
+    padding-top: 0.5rem;
+    padding-right: 1rem;
+    min-height: 4.17%;
+    width: 12%;
+    border-right: 1px solid black;
+    text-align: right;
+}
+
+.time-marker:nth-of-type(even) {
+    background-color: #eafbed; 
+}
+
+.time-marker:nth-of-type(odd) {
+    background-color: white;
+}
+
