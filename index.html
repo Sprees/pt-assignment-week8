@@ -6,6 +6,7 @@
     <title>MoveIt Manager</title>
     <link rel="stylesheet" href="styles.css">
     <script src="index.js" defer></script>
+    <script src="https://kit.fontawesome.com/c9082e7fda.js" crossorigin="anonymous" defer></script>
 </head>
 <body>
     <div class="tabs">
@@ -32,7 +33,7 @@
             </div>
             <div id="scheduler-body">
                 <div class="timeline-container">
-                    <div class="timeline-markers">
+                    <!-- <div class="timeline-markers">
                         <div class="time-marker">12:00 AM</div>
                         <div class="time-marker">1:00 AM</div>
                         <div class="time-marker">2:00 AM</div>
@@ -57,7 +58,7 @@
                         <div class="time-marker">9:00 PM</div>
                         <div class="time-marker">10:00 PM</div>
                         <div class="time-marker">11:00 PM</div>
-                    </div>
+                    </div> -->
                 </div>
                 <div id="job-form-container">
                     <h2>Job Entry</h2>
@@ -71,7 +72,7 @@
                         </fieldset>
                     
 
-                        <fieldset class="job-form-group">
+                        <fieldset class="job-form-group" id="address-1">
                             <legend>Starting Address</legend>
                             <label for="address-1">Address Line 1</label>
                             <input type="text" name="address-1" id="address-1" placeholder="123 E Main St">
@@ -144,7 +145,7 @@
                             </div>
                         </fieldset>
 
-                        <fieldset class="job-form-group">
+                        <fieldset class="job-form-group" id="address-2">
                             <legend>Ending Address</legend>
                             <label for="address-1">Address Line 1</label>
                             <input type="text" name="address-1" id="address-1" placeholder="123 E Main St">
@@ -233,9 +234,9 @@
                             </select>
                             <label>Specialty Items</label>
                             <div class="checkbox-group">
-                                <label><input type="checkbox" name="specialty" value="piano"> Piano</label>
-                                <label><input type="checkbox" name="specialty" value="safe"> Safe</label>
-                                <label><input type="checkbox" name="specialty" value="other"> Other</label>
+                                <label><input type="checkbox" name="specialty" id='specialty-1' value="piano"> Piano</label>
+                                <label><input type="checkbox" name="specialty" id='specialty-2' value="safe"> Safe</label>
+                                <label><input type="checkbox" name="specialty" id='specialty-3' value="other"> Other</label>
                             </div>
                             <div>
                                 <label for="notes">Job Notes</label>
@@ -245,8 +246,7 @@
 
                         <div class="job-form-group">
                             <label for="crew">Crew <span>0 selected</span></label>
-                            <div id="crew">
-                            </div>
+                            <div id="crew"></div>
                         </div>
             
                         <button id='job-entry-submit' type="submit">Submit Job</button>
