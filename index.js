@@ -164,7 +164,6 @@ class App {
 
 class TabManager {
     constructor({tabSelector, paneSelector, defaultId}) {
-        console.log(typeof tabSelector)
         this.defaultId = defaultId
         this.tabs = document.querySelectorAll(tabSelector);
         this.panes = document.querySelectorAll(paneSelector);
@@ -250,7 +249,6 @@ class ScheduleManager {
                     inputName = inputName.join('')
                 }
                 let fieldsetInputs = e.target.closest('fieldset').elements
-                console.log(fieldsetInputs)
                 let addressIndex = e.target.closest('fieldset').id
                 addressIndex = +addressIndex.split('-')[1] - 1;
                 if(!this.jobEntry.addresses[addressIndex]) {
@@ -273,24 +271,15 @@ class ScheduleManager {
                         this.jobEntry.specialty.splice(this.jobEntry.specialty.findIndex(el => el === e.target.value), 1);
                 }
             }
-            console.log(this.jobEntry)
         })
     }
 
     addJobToTimeline() {
         const timelineContainer = document.querySelector('.timeline-container');
-        console.log(this.jobs)
         this.jobs.forEach(job => {
             let jobCard = this.createJobCard(job);
             timelineContainer.appendChild(jobCard);
         })
-    }
-
-    editTimelineJob() {
-    }
-
-    deleteTimelineJob() {
-
     }
 
     addJobEntryToJobs() {
@@ -314,7 +303,6 @@ class ScheduleManager {
     }
 
     createJobCard(job) {
-        console.log(job)
         let container = document.createElement('div');
         let header = document.createElement('h2');
         let startEndAddressesContainer = document.createElement('div');
@@ -389,8 +377,7 @@ class ScheduleManager {
                 addressFormInputs['zip-code'].value = zipCode
             })
             let jobInfoFormInputs = document.querySelector('#job-info').elements
-            const {startTime, trucks, jobType} = job;
-            console.log(jobInfoFormInputs['specialty-1'].value)
+            const {startTime, trucks, jobType, notes} = job;
             jobInfoFormInputs['start-time'].value = convertTime12to24(startTime);
             jobInfoFormInputs['trucks'].value = trucks;
             jobInfoFormInputs['job-type'].value = jobType.toLowerCase().split(' ').join('-')
@@ -401,9 +388,10 @@ class ScheduleManager {
                     } 
                 }
             })
+            jobInfoFormInputs['notes'].value = notes
 
             e.target.closest('.job-card').outerHTML = '';
-            this.jobEntry = { ...job }
+            this.jobEntry = { ...job, crew: [] };
 
             job.crew.forEach(crewMember => {
                 this.addEmployeeToJobEntry(crewMember);
@@ -477,7 +465,6 @@ class ScheduleManager {
         let employees = this.employees.filter(e => e.id === employee.id)
         if(!employees.length) {
             this.employees.push(employee);
-            console.log(this.employees)
         }
         this.updateAvailableEmployees();
     }
@@ -487,7 +474,6 @@ class ScheduleManager {
         let employeeCard = this.createEmployeeCard(employee, false);
         jobEntryCrewEl.appendChild(employeeCard);
         this.jobEntry.crew.push(employee);
-        console.log(this.jobEntry.crew)
         this.removeAvailableEmployees(employee.id);
     }
 
@@ -497,7 +483,6 @@ class ScheduleManager {
         this.jobEntry.crew = this.jobEntry.crew.filter(crewMember => {
             return crewMember.firstName !== employee.firstName && crewMember.lastName !== employee.lastName
         })
-        console.log(this.jobEntry.crew)
         this.addAvailableEmployees(employee);
     }
 

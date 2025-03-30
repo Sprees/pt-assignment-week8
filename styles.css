@@ -297,7 +297,7 @@ fieldset {
 #job-entry-form > button {
     font-size: 1rem;
     position: absolute;
-    top: 0px;
+    top: -2rem;
     right: 20px;
     padding: 0.25rem 0.5rem;
     border-radius: 0.5rem;
