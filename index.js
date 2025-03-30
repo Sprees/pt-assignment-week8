@@ -1,3 +1,18 @@
+const convertTime12to24 = (time12h) => {
+    const [time, modifier] = time12h.split(' ');    
+    let [hours, minutes] = time.split(':');
+    
+    if (hours === '12') {
+        hours = '00';
+    }
+    
+    if (modifier === 'PM') {
+        hours = parseInt(hours, 10) + 12;
+    }
+    
+    return `${hours}:${minutes}`;
+}
+
 class App {
     constructor() {
         this.employees = [
@@ -225,20 +240,29 @@ class ScheduleManager {
             
 
             if(e.target.closest('fieldset').id.includes('address')) {
-                let addressFieldset = e.target.closest('fieldset')
+                let inputName = e.target.name
+                if(inputName.includes('-')) {
+                    inputName = inputName.split('-')
+                    inputName = inputName.map((word, i) => {
+                        if(i !== 0) word = word[0].toUpperCase() + word.slice(1);
+                        return word
+                    })
+                    inputName = inputName.join('')
+                }
+                let fieldsetInputs = e.target.closest('fieldset').elements
+                console.log(fieldsetInputs)
                 let addressIndex = e.target.closest('fieldset').id
                 addressIndex = +addressIndex.split('-')[1] - 1;
                 if(!this.jobEntry.addresses[addressIndex]) {
-                    let fieldsetInputs = addressFieldset.querySelectorAll('input, select')
                     this.jobEntry.addresses[addressIndex] = {
-                        address1: fieldsetInputs[0].value,
-                        address2: fieldsetInputs[1].value,
-                        city: fieldsetInputs[2].value,
-                        state: fieldsetInputs[3].value,
-                        zipCode: fieldsetInputs[4].value,
+                        address1: fieldsetInputs['address-1'].value,
+                        address2: fieldsetInputs['address-2'].value,
+                        city: fieldsetInputs['city'].value,
+                        state: fieldsetInputs['state'].value,
+                        zipCode: fieldsetInputs['zip-code'].value,
                     }
                 }
-                this.jobEntry.addresses[addressIndex][targetId] = e.target.value;
+                this.jobEntry.addresses[addressIndex][inputName] = e.target.value;
             }
 
             if(e.target.name === 'specialty') {
@@ -255,14 +279,14 @@ class ScheduleManager {
 
     addJobToTimeline() {
         const timelineContainer = document.querySelector('.timeline-container');
+        console.log(this.jobs)
         this.jobs.forEach(job => {
             let jobCard = this.createJobCard(job);
             timelineContainer.appendChild(jobCard);
         })
     }
 
-    editSubmittedJob() {
-
+    editTimelineJob() {
     }
 
     deleteTimelineJob() {
@@ -273,6 +297,7 @@ class ScheduleManager {
         this.jobs.push(this.jobEntry);
         this.addJobToTimeline(this.jobEntry);
         document.querySelector('#job-entry-form').reset();
+        document.querySelector('#crew').innerHTML = '';
         this.jobEntry = {
             date: null,
             customerName: '',
@@ -292,8 +317,12 @@ class ScheduleManager {
         console.log(job)
         let container = document.createElement('div');
         let header = document.createElement('h2');
-        let startEndAddresses = document.createElement('p');
-        let jobInfo = document.createElement('p');
+        let startEndAddressesContainer = document.createElement('div');
+        let jobInfoContainer = document.createElement('div');
+        let crewContainer = document.createElement('div');
+        let controlsContainer = document.createElement('div');
+        let editIcon = document.createElement('i');
+        let trashIcon = document.createElement('i');
         let truckIcon = document.createElement('i');
         let crewIcon = document.createElement('i');
         let clockIcon = document.createElement('i');
@@ -301,6 +330,17 @@ class ScheduleManager {
         let rightArrowIcon = document.createElement('i');
         let jobType = document.createElement('span');
 
+        job.crew.forEach(person => {
+            let crewMember = document.createElement('span');
+            crewMember.textContent = `${person.firstName} ${person.lastName.charAt(0).toUpperCase()}.`
+            crewMember.classList.add('crew-member');
+            crewContainer.append(crewMember);
+        })
+
+        container.classList.add('job-card');
+        controlsContainer.classList.add('controls-container');
+        editIcon.classList.add('fa-solid', 'fa-pen');
+        trashIcon.classList.add('fa-solid', 'fa-trash');
         truckIcon.classList.add('fa-solid', 'fa-truck');
         crewIcon.classList.add('fa-solid', 'fa-user');
         clockIcon.classList.add('fa-solid', 'fa-clock');
@@ -308,13 +348,13 @@ class ScheduleManager {
         rightArrowIcon.classList.add('fa-solid', 'fa-arrow-right');
 
         header.textContent = job.customerName
-        startEndAddresses.append(
+        startEndAddressesContainer.append(
             houseIcon, 
             `${job.addresses[0].city}, ${job.addresses[0].state}`,
             rightArrowIcon,
             `${job.addresses[job.addresses.length - 1].city}, ${job.addresses[job.addresses.length - 1].state}`
         )
-        jobInfo.append(
+        jobInfoContainer.append(
             truckIcon,
             job.trucks,
             crewIcon,
@@ -323,10 +363,61 @@ class ScheduleManager {
             job.startTime,
             jobType
         )
+        controlsContainer.append(
+            editIcon,
+            trashIcon
+        )
 
         jobType.textContent = job.jobType
 
-        container.append(header, startEndAddresses, jobInfo);
+        container.append(header, startEndAddressesContainer, jobInfoContainer, crewContainer, controlsContainer);
+
+        editIcon.addEventListener('click', e => {
+            this.jobs = this.jobs.filter(job => job.customerName !== job.customerName)
+            const { customerName, customerEmail, customerPhone } = job
+            let customerInfoFormInputs = document.querySelector('#customer-info').elements
+            customerInfoFormInputs['customer-name'].value = customerName
+            customerInfoFormInputs['customer-email'].value = customerEmail
+            customerInfoFormInputs['customer-phone'].value = customerPhone
+            job.addresses.forEach((address, i) => {
+                const {address1, address2, city, state, zipCode} = address
+                let addressFormInputs = document.querySelector(`#address-${i + 1}`).elements
+                addressFormInputs['address-1'].value = address1
+                addressFormInputs['address-2'].value = address2
+                addressFormInputs['city'].value = city
+                addressFormInputs['state'].value = state
+                addressFormInputs['zip-code'].value = zipCode
+            })
+            let jobInfoFormInputs = document.querySelector('#job-info').elements
+            const {startTime, trucks, jobType} = job;
+            console.log(jobInfoFormInputs['specialty-1'].value)
+            jobInfoFormInputs['start-time'].value = convertTime12to24(startTime);
+            jobInfoFormInputs['trucks'].value = trucks;
+            jobInfoFormInputs['job-type'].value = jobType.toLowerCase().split(' ').join('-')
+            Array.from(jobInfoFormInputs).forEach(input => {
+                if(input.name.includes('specialty')) {
+                    if(job.specialty.includes(input.value)) {
+                        input.checked = true;
+                    } 
+                }
+            })
+
+            e.target.closest('.job-card').outerHTML = '';
+            this.jobEntry = { ...job }
+
+            job.crew.forEach(crewMember => {
+                this.addEmployeeToJobEntry(crewMember);
+            })
+
+        })
+
+        trashIcon.addEventListener('click', e => {
+            this.jobs = this.jobs.filter(job => job.customerName !== job.customerName)
+            e.target.closest('.job-card').outerHTML = '';
+            job.crew.forEach(crewMember => {
+                this.addAvailableEmployees(crewMember);
+            })
+        })
 
         return container
     }
@@ -395,12 +486,18 @@ class ScheduleManager {
         let jobEntryCrewEl = document.querySelector('#crew');
         let employeeCard = this.createEmployeeCard(employee, false);
         jobEntryCrewEl.appendChild(employeeCard);
+        this.jobEntry.crew.push(employee);
+        console.log(this.jobEntry.crew)
         this.removeAvailableEmployees(employee.id);
     }
 
     removeEmployeeFromJobEntry(event, employee) {
         event.preventDefault();
         event.currentTarget.parentElement.outerHTML = '';
+        this.jobEntry.crew = this.jobEntry.crew.filter(crewMember => {
+            return crewMember.firstName !== employee.firstName && crewMember.lastName !== employee.lastName
+        })
+        console.log(this.jobEntry.crew)
         this.addAvailableEmployees(employee);
     }
 

@@ -145,6 +145,8 @@
 
 #scheduler-body > div {
     flex-basis: 33.33%;
+    max-height: 1000px;
+    overflow-y:auto;
 }
 
 #scheduler-body > div:first-of-type {
@@ -156,8 +158,6 @@
 }
 
 #scheduler-employee-list {
-    max-height: 1000px;
-    overflow-y:auto;
     display: flex;
     flex-direction: column;
 }
@@ -216,7 +216,18 @@
     background-color: #45a049;
 }
 
+
 /* Job Entry Form */
+#crew {
+    display: flex;
+    flex-wrap: wrap;
+    padding-bottom: 0.5rem;
+}
+
+#crew .employee-card {
+    flex-basis: calc(50% - 2rem);
+    margin: 0;
+}
 
 #job-form-container {
     border: 1px solid black;
@@ -246,6 +257,19 @@ label[for=state], label[for=zip-code] {
     display: block;
 }
 
+div:has(> #notes) {
+    display: block;
+}
+
+#notes {
+    display: block;
+    width: 100%;
+    min-height: 4rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+}
+
 #zip-code, select {
     padding: 0.25rem;
     border-radius: 0.3rem;
@@ -253,6 +277,7 @@ label[for=state], label[for=zip-code] {
 
 select {
     background-color: inherit;
+    margin-bottom: 0.5rem;
 }
 
 fieldset > input {
@@ -296,29 +321,62 @@ fieldset {
     outline: none;
 }
 
-/* Timeline */
+.timeline-container {
+    text-align: center;
+}
 
-.timeline-markers {
-    height: 100%;
+.timeline-container > h2 {
+    padding: 1rem 0;
+}
+
+.job-card {
+    position: relative;
+    margin: 0 auto;
+    width: 75%;
+    padding: 1rem;
     border: 1px solid black;
-    background-color: #f3f6f4;
-    overflow: hidden;
     border-radius: 0.5rem;
+    margin-bottom: 2rem;
 }
 
-.time-marker {
-    padding-top: 0.5rem;
-    padding-right: 1rem;
-    min-height: 4.17%;
-    width: 12%;
-    border-right: 1px solid black;
-    text-align: right;
+.job-card > * {
+    padding: 0.25rem;
 }
 
-.time-marker:nth-of-type(even) {
-    background-color: #eafbed; 
+.job-card i {
+    margin-right: 0.25rem;
 }
 
-.time-marker:nth-of-type(odd) {
-    background-color: white;
+.fa-arrow-right, .fa-user, .fa-clock {
+    margin-left: 0.25rem;
+}
+
+.fa-trash, .fa-pen {
+    cursor: pointer;
+}
+
+.fa-trash:hover, .fa-pen:hover {
+    color: red;
+}
+
+.job-card span {
+    margin-left: 0.25rem;
+}
+
+.job-card div:nth-of-type(2) > span::before {
+    content: '| '
+}
+
+.crew-member:not(.crew-member:last-of-type)::after {
+    content: ' |';
+}
+
+.controls-container {
+    position: absolute;
+    bottom: 0.25rem;
+    right: 0.25rem;
+}
+
+.controls-container i:first-of-type {
+    margin-right: 1rem;
 }

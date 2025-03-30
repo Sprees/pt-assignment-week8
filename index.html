@@ -33,38 +33,13 @@
             </div>
             <div id="scheduler-body">
                 <div class="timeline-container">
-                    <!-- <div class="timeline-markers">
-                        <div class="time-marker">12:00 AM</div>
-                        <div class="time-marker">1:00 AM</div>
-                        <div class="time-marker">2:00 AM</div>
-                        <div class="time-marker">3:00 AM</div>
-                        <div class="time-marker">4:00 AM</div>
-                        <div class="time-marker">5:00 AM</div>
-                        <div class="time-marker">6:00 AM</div>
-                        <div class="time-marker">7:00 AM</div>
-                        <div class="time-marker">8:00 AM</div>
-                        <div class="time-marker">9:00 AM</div>
-                        <div class="time-marker">10:00 AM</div>
-                        <div class="time-marker">11:00 AM</div>
-                        <div class="time-marker">12:00 PM</div>
-                        <div class="time-marker">1:00 PM</div>
-                        <div class="time-marker">2:00 PM</div>
-                        <div class="time-marker">3:00 PM</div>
-                        <div class="time-marker">4:00 PM</div>
-                        <div class="time-marker">5:00 PM</div>
-                        <div class="time-marker">6:00 PM</div>
-                        <div class="time-marker">7:00 PM</div>
-                        <div class="time-marker">8:00 PM</div>
-                        <div class="time-marker">9:00 PM</div>
-                        <div class="time-marker">10:00 PM</div>
-                        <div class="time-marker">11:00 PM</div>
-                    </div> -->
+                    <h2>Jobs Scheduled</h2>
                 </div>
                 <div id="job-form-container">
                     <h2>Job Entry</h2>
                     <form id="job-entry-form">
 
-                        <fieldset class="job-form-group">
+                        <fieldset class="job-form-group" id="customer-info">
                             <legend>Customer Information</legend>
                             <input type="text" name="customer-name" id="customer-name" placeholder="Customer Name">
                             <input type="tel" name="customer-phone" id="customer-phone" placeholder="(602) 111-2222">
@@ -74,17 +49,17 @@
 
                         <fieldset class="job-form-group" id="address-1">
                             <legend>Starting Address</legend>
-                            <label for="address-1">Address Line 1</label>
-                            <input type="text" name="address-1" id="address-1" placeholder="123 E Main St">
-                            <label for="address-1">Address Line 2</label>
-                            <input type="text" name="address-2" id="address-2" placeholder="Building 12, Apt 205">
-                            <label for="city">City</label>
-                            <input type="text" name="city" id="city" placeholder="Phoenix">
+                            <label>Address Line 1</label>
+                            <input type="text" name="address-1" placeholder="123 E Main St">
+                            <label>Address Line 2</label>
+                            <input type="text" name="address-2" placeholder="Building 12, Apt 205">
+                            <label>City</label>
+                            <input type="text" name="city" placeholder="Phoenix">
                             <div>
 
                                 <div>
-                                    <label for="state">State</label>
-                                    <select name="state" id="state" required>
+                                    <label>State</label>
+                                    <select name="state" required>
                                         <option value="AL">Alabama</option>
                                         <option value="AK">Alaska</option>
                                         <option value="AZ" selected>Arizona</option>
@@ -139,25 +114,25 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="zip-code">Zip Code</label>
-                                    <input type="text" minlength="5" name="zip-code" id="zip-code" placeholder="85032">
+                                    <label>Zip Code</label>
+                                    <input type="text" minlength="5" name="zip-code" placeholder="85032">
                                 </div>
                             </div>
                         </fieldset>
 
                         <fieldset class="job-form-group" id="address-2">
-                            <legend>Ending Address</legend>
-                            <label for="address-1">Address Line 1</label>
-                            <input type="text" name="address-1" id="address-1" placeholder="123 E Main St">
-                            <label for="address-1">Address Line 2</label>
-                            <input type="text" name="address-2" id="address-2" placeholder="Building 12, Apt 205">
-                            <label for="city">City</label>
-                            <input type="text" name="city" id="city" placeholder="Phoenix">
+                            <legend>Starting Address</legend>
+                            <label>Address Line 1</label>
+                            <input type="text" name="address-1" placeholder="123 E Main St">
+                            <label>Address Line 2</label>
+                            <input type="text" name="address-2" placeholder="Building 12, Apt 205">
+                            <label>City</label>
+                            <input type="text" name="city" placeholder="Phoenix">
                             <div>
 
                                 <div>
-                                    <label for="state">State</label>
-                                    <select name="state" id="state" required>
+                                    <label>State</label>
+                                    <select name="state" required>
                                         <option value="AL">Alabama</option>
                                         <option value="AK">Alaska</option>
                                         <option value="AZ" selected>Arizona</option>
@@ -212,28 +187,28 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="zip-code">Zip Code</label>
-                                    <input type="text" minlength="5" name="zip-code" id="zip-code" placeholder="85032">
+                                    <label>Zip Code</label>
+                                    <input type="text" minlength="5" name="zip-code" placeholder="85032">
                                 </div>
                             </div>
                         </fieldset>
 
-                        <fieldset class="job-form-group">
+                        <fieldset class="job-form-group" id="job-info">
                             <legend>Job Information</legend>
-                            <legend>Start Time</legend>
+                            <label for="start-time">Start Time</label>
                             <input type="time" id="start-time" name="start-time" value="08:00" required>
                             <label for="trucks">Number of Trucks</label>
                             <input type="number" id="trucks" name="trucks" min="1" value="1" required>
                             <label for="job-type">Job Type</label>
-                            <select id="job-type" name="job-type" required>
-                                <option value="local" selected>Local</option>
-                                <option value="interstate">Interstate</option>
-                                <option value="packing">Packing</option>
-                                <option value="load-only">Load Only</option>
-                                <option value="unload-only">Unload Only</option>
-                            </select>
-                            <label>Specialty Items</label>
-                            <div class="checkbox-group">
+                            <div>
+                                <select id="job-type" name="job-type" required>
+                                    <option value="local" selected>Local</option>
+                                    <option value="interstate">Interstate</option>
+                                    <option value="packing">Packing</option>
+                                    <option value="load-only">Load Only</option>
+                                    <option value="unload-only">Unload Only</option>
+                                </select>
+                                <label>Specialty Items:</label>
                                 <label><input type="checkbox" name="specialty" id='specialty-1' value="piano"> Piano</label>
                                 <label><input type="checkbox" name="specialty" id='specialty-2' value="safe"> Safe</label>
                                 <label><input type="checkbox" name="specialty" id='specialty-3' value="other"> Other</label>
@@ -244,10 +219,12 @@
                             </div>
                         </fieldset>
 
-                        <div class="job-form-group">
-                            <label for="crew">Crew <span>0 selected</span></label>
-                            <div id="crew"></div>
-                        </div>
+                        <fieldset class="job-form-group" id="crew-info">
+                            <legend>Crew</legend>
+                            <div id="crew">
+
+                            </div>
+                        </fieldset>
             
                         <button id='job-entry-submit' type="submit">Submit Job</button>
                     </form>
